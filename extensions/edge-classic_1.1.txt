@@ -1,0 +1,171 @@
+===============================================================================
+Universal Doom Map Format EDGE-Classic extensions v1.1 - 2024.05.13
+
+    Copyright (c) 2023-2024 The EDGE Team.
+    Permission is granted to copy, distribute and/or modify this document
+    under the terms of the GNU Free Documentation License, Version 1.2
+    or any later version published by the Free Software Foundation;
+    with no Invariant Sections, no Front-Cover Texts, and no Back-Cover Texts.
+    
+===============================================================================
+
+This document discusses only the additions EDGE-Classic makes to the UDMF 
+specification.
+
+=======================================
+I. Grammar / Syntax
+=======================================
+
+    No changes.
+
+=======================================
+II. Implementation Semantics
+=======================================
+ 
+
+II.C : Implementation Dependence
+
+
+EDGE-Classic supports the "Doom" and "Heretic" namespaces defined in the base specification and adds one new
+one:
+    "EDGE-Classic"
+
+In addition, the following namespace extensions from other source ports are supported:
+    "ZDoomTranslated"
+    
+The only difference between these two namespaces is how line, thing and sector
+specials are handled:
+
+'EDGE-Classic' uses Doom-type specials extended with additional fields and parameters not
+possible in the binary map format to complement the existing specials defined by its
+DDF and RTS content definition and scripting languages.
+
+'ZDoomTranslated' uses Doom-type specials. Specials in these maps that are not already
+defined by EDGE-Classic will produce a message in the log but will not prevent a map from being loaded.
+
+
+=======================================
+III. Standardized Fields
+=======================================
+
+In addition to the standard fields, EDGE-Classic defines the following:
+Note: All <bool> fields default to false unless mentioned otherwise.
+
+   vertex
+   {
+      zfloor = <float>;         // Floor height at this vertex. 
+                                // Default should be a value beyond the minimum/maximum height limit of the engine.
+                                // EDGE-Classic uses -40000.0.
+      zceiling = <float>;       // Ceiling height at this vertex.
+                                // Default should be a value beyond the minimum/maximum height limit of the engine.
+                                // EDGE-Classic uses 40000.0.
+                                // zfloor/zceiling are effective in any triangular sector, or rectangular sectors
+                                // that fulfill the following conditions:
+                                // - Only two out of the four vertices utilize zfloor/zceiling values
+                                // - The two vertices must be part of the same line segment
+                                // - The zfloor/zceiling value must be identical between the two vertices
+                                // - The zfloor/zceiling vertices for a rectangular sector can be different but must
+                                //   otherwise adhere to the rules above
+   }    
+
+   linedef
+   {
+      blockplayers = <bool>;    // Line blocks players' movement.
+      blocksight = <bool>;      // Line blocks monster line of sight
+      alpha = <float>;          // Sets translucency of line. Default is 1.0 (fully visible)
+   }
+
+   sidedef
+   {
+      scalex_top = <float>;     // X scale for upper texture, Default = 1.0.
+      scaley_top = <float>;     // Y scale for upper texture, Default = 1.0.
+      scalex_mid = <float>;     // X scale for mid texture, Default = 1.0.
+      scaley_mid = <float>;     // Y scale for mid texture, Default = 1.0.
+      scalex_bottom = <float>;  // X scale for lower texture, Default = 1.0.
+      scaley_bottom = <float>;  // Y scale for lower texture, Default = 1.0.
+
+      offsetx_top = <float>;    // X offset for upper texture, Default = 0.0.
+      offsety_top = <float>;    // y offset for upper texture, Default = 0.0.
+      offsetx_mid = <float>;    // X offset for mid texture, Default = 0.0.
+      offsety_mid = <float>;    // y offset for mid texture, Default = 0.0.
+      offsetx_bottom = <float>; // X offset for lower texture, Default = 0.0.
+      offsety_bottom = <float>; // y offset for lower texture, Default = 0.0.
+                                // When global texture offsets are used they will
+                                // be added on top of these values.
+   }
+
+   sector
+   {
+      xpanningfloor = <float>;   // X texture offset of floor texture, Default = 0.0.
+      ypanningfloor = <float>;   // Y texture offset of floor texture, Default = 0.0.
+      xpanningceiling = <float>; // X texture offset of ceiling texture, Default = 0.0.
+      ypanningceiling = <float>; // Y texture offset of ceiling texture, Default = 0.0.
+
+      xscalefloor = <float>;     // X texture scale of floor texture, Default = 1.0.
+      yscalefloor = <float>;     // Y texture scale of floor texture, Default = 1.0.
+      xscaleceiling = <float>;   // X texture scale of ceiling texture, Default = 1.0.
+      yscaleceiling = <float>;   // Y texture scale of ceiling texture, Default = 1.0.
+
+      rotationfloor = <float>;   // Rotation of floor texture in degrees, Default = 0.0.
+      rotationceiling = <float>; // Rotation of ceiling texture in degrees, Default = 0.0.
+
+      alphafloor = <float>;      // Translucency of floor plane. Default is 1.0 (fully visible)
+      alphaceiling = <float>;    // Translucency of ceiling plane. Default is 1.0 (fully visible)
+
+      gravity = <float>;         // Sector's gravity. Default is 1.0.
+                                 // For EDGE-Classic, this is treated as a multiplier against the internal default gravity of 8.0,
+                                 // i.e. gravity = 0.5 would be equivalent to a gravity of 4.0
+
+      lightcolor = <integer>;    // Light color for this sector, in 0xRRGGBB format. Default (no change to lighting) is 0xFFFFFF
+                                 // For EDGE-Classic, this will leverage the USE_COLOURMAP DDFSECT special, replacing any
+                                 // previously defined colourmap for the sector if present
+
+      fadecolor = <integer>;     // Fog color for this sector, in 0xRRGGBB format. Default (no fog) is 0x000000.
+      fogdensity = <integer>;    // Fog density for this sector. EDGE-Classic makes an effort to map the ZDoom values recognized
+                                 // by map editors (0-510) in the following manner:
+                                 // - Values of 0-1 are equivalent to a 20% FOG_DENSITY in SECTORS.DDF
+                                 // - The remaining values (2-510) are roughly mapped to the 0-50% FOG_DENSITY scale in SECTORS.DDF;
+                                 //   for example, a value of 5 would be roughly 1% while 510 would be 50%
+                                 // - EDGE-Classic additionally supports fogdensity values of 510-1020, which would be equivalent to the 50-100% SECTORS.DDF
+                                 //   FOG_DENSITY scale, but map editors may clamp this value to 510. Switching editors, manually editing
+                                 //   the map's TEXTMAP, or using a DDF sector fog special instead may be necessary in these cases.
+
+      reverbpreset = <string>;   // When the player is in this sector, sounds will have this DDF reverb preset applied to them.
+                                 // If present, will override any reverb preset that a DDF sector special defines, as well as dynamic
+                                 // reverb
+   }
+
+   thing
+   {
+      health = <float>;          // Set per-thing health. Positive values are treated as a multiplier for the thing's default health.
+                                 // Negative values are converted to a positive value and then treated as redefining the thing's default health.
+                                 // For example, a thing which would normally have 100 health would have 200 health if this parameter was set to 2.
+                                 // On the other hand, it would only have 2 health if this parameter was set to -2.
+                                 // Default = 1.
+
+      alpha = <float>;          // Per-thing translucency, with 0.0 being completely transparent and 1.0 being completely solid. Default is 1.0.
+                                // Note: DDF specials like STEALTH may also influence this value.
+
+      scalex = <float>;         // Horizontal scaling on thing. Default = 0 (ignored).
+      scaley = <float>;         // Vertical scaling on thing. Default = 0 (ignored).
+      scale = <float>;          // Vertical and horizontal scaling on thing. Default = 0 (ignored).
+                                // Note: It is recommended to use either scale or scalex/scaley, but not both, on the same thing. If both are present
+                                // for a thing, scale will be used instead of scalex/scaley.
+   }
+
+
+=======================================
+Changelog
+=======================================
+2024.05.13 - Set version to 1.1, added linedef and sector alpha fields
+2023.09.22 - Set version to 1.0, added notes to thing scaling comments
+2023.09.18 - Addition of alpha, scale, scalex and scaley thing fields
+2023.09.14 - Updated sidedef, sector, linedef and thing sections
+2023.08.25 - Updated fogdensity scaling documentation
+2023.08.18 - Addition of fadecolor/fogdensity sector fields
+2023.02.27 - Initial draft; addition of zfloor/zceiling vertex fields
+
+
+===============================================================================
+EOF
+===============================================================================
