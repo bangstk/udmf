@@ -17,6 +17,11 @@ In order to add new features, it is imperative for engines to define new namespa
 
 Some of thase 'engine exclusive' namespaces can be found on [`extensions/`](./extensions/).
 
+## Binary formats
+To compare against the legacy formats, see the [map formats document](./formats/map.md).
+
+For a developer-friendly descriptive section on the various BSP tree formats, see [here](./formats/bsp.md).
+
 # Legalese
 Copyright (c) 2008-2009 James Haley.
 
