@@ -217,3 +217,33 @@ The binary reading for all ZDoom formats can be done in a single procedure/funct
 | 12 * segment count   | `seg_xgl2_t`    | All segments |
 | 4                    | `uint32_t`      | Number of nodes |
 | 40 * segment count   | `node_xgl3_t`   | All segments |
+
+## LEAFS structure
+An additional lump used in the PlayStation ports of Doom, Final Doom and Hexen, as well as Doom 64.
+Must have all entries clockwise-sorted in each subsector.
+Each `leaf_t` matches one-to-one with the list of subsectors.
+
+| Offset | Size           | Type     | Description |
+|--------|----------------|----------|-------------|
+| 0      | 2              | uint16_t | Number of references in this `leaf_t`. |
+| 2      | 4 * references | leaf_t   | References to seg-vertex index pairs. |
+
+| Offset | Size | Type     | Description |
+|--------|------|----------|-------------|
+| 0      | 2    | uint16_t | Vertex index. |
+| 2      | 2    | uint16_t | Segment index. |
+
+## FLOORs structure
+An additional lump used in the Nintendo 64 port of Hexen. Though not part, or an extension, of the BSP tree itself, it is used in the rendering process.
+Each `floor_t` matches one-to-one with the list of sectors.
+
+| Offset | Size          | Type     | Description |
+|--------|---------------|----------|-------------|
+| 0      | 2             | uint16_t | Number of triangles in this `floor_t`. |
+| 2      | 6 * triangles | leaf_t   | Trio of vertex indices forming a `triangle_t`. |
+
+| Offset | Size | Type     | Description |
+|--------|------|----------|-------------|
+| 0      | 2    | uint16_t | First vertex index. |
+| 2      | 2    | uint16_t | Second vertex index. |
+| 4      | 2    | uint16_t | Third vertex index. |
