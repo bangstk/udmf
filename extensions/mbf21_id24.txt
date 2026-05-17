@@ -77,57 +77,65 @@ Note: All <bool> fields default to false unless mentioned otherwise.
    linedef
    {
       // bits added in MBF21
-      blockplayers = <bool>;           // Line blocks players' movement.
-      blocklandmonsters = <bool>;      // Line blocks walking monsters' movement.
+      blockplayers = <bool>;          // Line blocks players' movement.
+      blocklandmonsters = <bool>;     // Line blocks walking monsters' movement.
       
       
       // easier use of features
-      transparent = <bool>;            // [Boom Special 260] true = line is transparent
-      tranmap = <string>;              // [Boom Special 260 - tranmap] Use with 'transparent' to use a specific TRANMAP
+      transparent = <bool>;           // [Boom Special 260] true = line is transparent (using Boom's default TRANMAP)
+      tranmap = <string>;             // [Boom Special 260 - TRANMAP case] Use with 'transparent' to use a specific TRANMAP
+                                      // NOTE: DSDA/ZDoom UDMF does not have tranmap support for transparency
    }
 
    sidedef
    {
       // easier use of features
-      xscroll  = <float>;              // [Boom Special 254] wall scrolling X speed in map units per tic.
-      yscroll  = <float>;              // [Boom Special 254] wall scrolling Y speed in map units per tic.
+      xscroll  = <float>;             // [Boom Special 254/255] wall scrolling X speed in map units per tic.
+      yscroll  = <float>;             // [Boom Special 254/255] wall scrolling Y speed in map units per tic.
+                                      //                        NOTE: Eternity UDMF does not have these scroll fields
    }
 
    sector
    {
       // bits added in MBF21
-      special = <integer>             // Now parses Bit 12 and 13 like MBF21 (see MBF21 spec)
+      special = <integer>;            // Now parses Bit 12 and 13 like MBF21 (see MBF21 spec)
       
       
       // easier use of features
       lightfloor = <integer>;         // [Boom Special 213] The floor's light level. Default is 0.
-      lightceiling = <integer>;       // [Boom Special 254] The ceiling's light level. Default is 0.
-      lightfloorabsolute = <bool>;    // [Boom Special 213 extension] true = 'lightfloor' is an absolute value. Default is
-                                      // relative to the owning sector's light level.
-      lightceilingabsolute = <bool>;  // [Boom Special 254 extension] true = 'lightceiling' is an absolute value. Default is
-                                      // relative to the owning sector's light level. 
+      lightfloorabsolute = <bool>;    // [Boom Special 213] true = 'lightfloor' is an absolute light value. 
+                                      //                    false = 'lightfloor' is relative to sector's 'light'
+      lightceiling = <integer>;       // [Boom Special 261] The ceiling's light level. Default is 0.
+      lightceilingabsolute = <bool>;  // [Boom Special 261] true = 'lightceiling' is an absolute light value. 
+                                      //                    false = 'lightceiling' is relative to sector's 'light'
       
-      xscrollfloor = <float>;         // [Boom Special 251/252/253] X map units per frame to scroll the floor. NOTE: Eternity uses different field 'scroll_floor_x'
-      yscrollfloor = <float>;         // [Boom Special 251/252/253] Y map units per frame to scroll the floor. NOTE: Eternity uses different field 'scroll_floor_y'
-      scrollfloormode = <integer>;    // Floor scroll mode bit mask (1 = scroll textures, 2 = carry static objects, 
-                                      // 4 = carry players, 8 = carry monsters. 
-                                      // NOTE: 2, 4, 8 must be set or cleared together to replicate Boom!)
-                                      // NOTE: Eternity uses a different field 'scroll_ceil_type'
-      xscrollceiling = <float>;       // [Boom Special 250] X map units per frame to scroll the ceiling. NOTE: Eternity uses different field 'scroll_ceil_x'
-      yscrollceiling = <float>;       // [Boom Special 250] Y map units per frame to scroll the ceiling. NOTE: Eternity uses different field 'scroll_ceil_y'
-      scrollceilingmode = <integer>;  // Ceiling scroll mode bit mask (1 = scroll textures, 2 - 4 ignored)
-                                      // Should be 1 if 'xscrollceiling' or 'yscrollceiling' are used.
+      scroll_floor_x = <float>;       // [Boom Special 251/252/253] X Scroll equivalent to Boom linedef length / 10. 
+                                      //                            NOTE: ZDoom/DSDA uses different field 'xscrollfloor'
+      scroll_floor_y = <float>;       // [Boom Special 251/252/253] Y Scroll equivalent to Boom linedef length / 10. 
+                                      //                            NOTE: ZDoom/DSDA uses different field 'yscrollfloor'
+      scroll_floor_type = <string>;   // [Boom Special 251/252/253] Floor scroll mode: "none" (no scroll), "visual" (only scroll texture), 
+                                      //                            "physical" (only carry the things), "both" (both scroll and carry)
+                                      //                            NOTE: ZDoom/DSDA UDMF uses a different field 'scrollfloormode'
+      scroll_ceil_x = <float>;        // [Boom Special 250] X Scroll equivalent to Boom linedef length / 10. 
+                                      //                    NOTE: ZDoom/DSDA UDMF uses different field 'xscrollceiling'
+      scroll_ceil_x = <float>;        // [Boom Special 250] Y Scroll equivalent to Boom linedef length / 10. 
+                                      //                    NOTE: ZDoom/DSDA UDMF uses different field 'yscrollceiling'
+      scroll_ceil_type = <string>;    // [Boom Special 250] Ceil scroll mode: "none" (no scroll), "visual" (only scroll texture)
+                                      //                    NOTE: ZDoom/DSDA UDMF uses a different field 'scrollceilingmode'
         
       friction = <integer>;           // [Boom Special 223] sets the sector's friction as if it were the line length for Boom friction.
-                                      // (Eternity already uses the field this way)
+                                      //                    NOTE: This is Eternity UDMF's version, ZDoom/DSDA have different friction fields
       
       xthrust = <float>;              // [Boom Special 224/225] applies thrust to actors - x-magnitude
       ythrust = <float>;              // [Boom Special 224/225] applies thrust to actors - y-magnitude
-      thrustlocation = <int>;         // [Boom Special 224/225] specifies where in the sector actors get thrusted: 
-                                      // 1 = on the ground (Boom current), 2 = in the air (Boom wind), 4 = this bit ignored
+      thrustlocation = <integer>;     // [Boom Special 224/225] Bitfield specifies whether the thrust is 
+                                      //                        "Boom Current (Special 225)" or "Boom Wind (Special 224)"
+                                      //                        value 1 = Boom current, value 2 = Boom wind
+                                      // NOTE: Eternity UDMF does not have these thrust fields
       
       skyfloor = <string>;            // [MBF Special 271] sets the sky texture used in this sector's floor
-      skyceiling = <string>           // [MBF Special 271] sets the sky texture used in this sector's ceiling
+      skyceiling = <string>;          // [MBF Special 271] sets the sky texture used in this sector's ceiling
+                                      // NOTE: Eternity UDMF has no sky fields. Use ID24 SKYDEFS (sky based on flat) instead?
                                       
       xpanningfloor = <float>;        // [ID24 Special 2048] X texture offset of floor texture, Default = 0.0.
       ypanningfloor = <float>;        // [ID24 Special 2048] Y texture offset of floor texture, Default = 0.0.
@@ -138,6 +146,7 @@ Note: All <bool> fields default to false unless mentioned otherwise.
       
       colormap = <string>;            // [ID24 Special 2075] sets the colormap this sector is drawn with. ID24/ZDoom style, not Boom style
                                       // (sector color is visible from any sector, not only when standing in the sector)
+                                      // NOTE: GZDoom discourages use of colormap and it is unclear whether Eternity's is Boom style or not
    }
 
    thing
@@ -168,19 +177,21 @@ Note: All <bool> fields default to false unless mentioned otherwise.
       yscrollbottom  = <float>;        // [Boom Special 254 extension] lower wall scrolling Y speed in map units per tic.
                                        
       light = <integer>;               // This side's light level. Default is 0.
-      lightabsolute = <bool>;          // true = 'light' is an absolute value. Default is 
-                                       // relative to the owning sector's light level.
+      lightabsolute = <bool>;          // true = 'light' is an absolute value. 
+                                       // Default is relative to the owning sector's light level.
       light_top = <integer>;           // This side's top tier light level. Default is 0.
-      lightabsolute_top = <bool>;      // true = 'light_top' is an absolute value. Default is
-                                       // relative to the sidedef's resulting light level.
+      lightabsolute_top = <bool>;      // true = 'light_top' is an absolute value. 
+                                       // Default is relative to the sidedef's resulting light level.
       light_mid = <integer>;           // This side's mid tier light level. Default is 0.
-      lightabsolute_mid = <bool>;      // true = 'light_mid' is an absolute value. Default is
-                                       // relative to the sidedef's resulting light level.
+      lightabsolute_mid = <bool>;      // true = 'light_mid' is an absolute value. 
+                                       // Default is to the sidedef's resulting light level.
       light_bottom = <integer>;        // This side's bottom tier light level. Default is 0.
-      lightabsolute_bottom = <bool>;   // true = 'light_bottom' is an absolute value. Default is
-                                       // relative to the sidedef's resulting light level.
+      lightabsolute_bottom = <bool>;   // true = 'light_bottom' is an absolute value. 
+                                       // Default isto the sidedef's resulting light level.
+
       nofakecontrast = <bool>;         // Disables use of fake contrast on this sidedef.
       smoothlighting = <bool>;         // Use smooth fake contrast.
+
       clipmidtex = <bool>;             // Side's mid textures are clipped to floor and ceiling.
       wrapmidtex = <bool>;             // Side's mid textures are wrapped.
    }
@@ -188,7 +199,8 @@ Note: All <bool> fields default to false unless mentioned otherwise.
    sector
    {    
       // man this would be awesome
-      moreids = <string>;             // Additional sector IDs/tags, specified as a space separated list of numbers (e.g. "2 666 1003 4505")
+      moreids = <string>;             // Additional sector IDs/tags, specified as a space separated list of numbers 
+                                      // (e.g. "2 666 1003 4505")
    }
 
 =======================================
