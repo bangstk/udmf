@@ -111,7 +111,7 @@ Note: All <bool> fields default to false unless mentioned otherwise.
                                       // NOTE: Eternity uses a different field 'scroll_ceil_type'
       xscrollceiling = <float>;       // [Boom Special 250] X map units per frame to scroll the ceiling. NOTE: Eternity uses different field 'scroll_ceil_x'
       yscrollceiling = <float>;       // [Boom Special 250] Y map units per frame to scroll the ceiling. NOTE: Eternity uses different field 'scroll_ceil_y'
-      scrollfloormode = <integer>;    // Ceiling scroll mode bit mask (1 = scroll textures, 2 - 4 ignored)
+      scrollceilingmode = <integer>;  // Ceiling scroll mode bit mask (1 = scroll textures, 2 - 4 ignored)
                                       // Should be 1 if 'xscrollceiling' or 'yscrollceiling' are used.
         
       friction = <integer>;           // [Boom Special 223] sets the sector's friction as if it were the line length for Boom friction.
