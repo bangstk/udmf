@@ -100,8 +100,12 @@ Note: All <bool> fields default to false unless mentioned otherwise.
       
       
       // easier use of features
-      lightfloor = <integer>;         // [Boom Special 213] The floor's light level. Default is 'light' value.
-      lightceiling = <integer>;       // [Boom Special 254] The ceiling's light level. Default is 'light' value.
+      lightfloor = <integer>;         // [Boom Special 213] The floor's light level. Default is 0.
+      lightceiling = <integer>;       // [Boom Special 254] The ceiling's light level. Default is 0.
+      lightfloorabsolute = <bool>;    // [Boom Special 213 extension] true = 'lightfloor' is an absolute value. Default is
+                                      // relative to the owning sector's light level.
+      lightceilingabsolute = <bool>;  // [Boom Special 254 extension] true = 'lightceiling' is an absolute value. Default is
+                                      // relative to the owning sector's light level. 
       
       xscrollfloor = <float>;         // [Boom Special 251/252/253] X map units per frame to scroll the floor. NOTE: Eternity uses different field 'scroll_floor_x'
       yscrollfloor = <float>;         // [Boom Special 251/252/253] Y map units per frame to scroll the floor. NOTE: Eternity uses different field 'scroll_floor_y'
@@ -182,12 +186,7 @@ Note: All <bool> fields default to false unless mentioned otherwise.
    }
    
    sector
-   {
-      lightfloorabsolute = <bool>;    // [Boom Special 213 extension] true = 'lightfloor' is an absolute value. Default is
-                                      // relative to the owning sector's light level.
-      lightceilingabsolute = <bool>;  // [Boom Special 254 extension] true = 'lightceiling' is an absolute value. Default is
-                                      // relative to the owning sector's light level. 
-      
+   {    
       // man this would be awesome
       moreids = <string>;             // Additional sector IDs/tags, specified as a space separated list of numbers (e.g. "2 666 1003 4505")
    }
