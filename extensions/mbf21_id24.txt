@@ -118,7 +118,7 @@ Note: All <bool> fields default to false unless mentioned otherwise.
                                       //                            NOTE: ZDoom/DSDA UDMF uses a different field 'scrollfloormode'
       scroll_ceil_x = <float>;        // [Boom Special 250] X Scroll equivalent to Boom linedef length / 10. 
                                       //                    NOTE: ZDoom/DSDA UDMF uses different field 'xscrollceiling'
-      scroll_ceil_x = <float>;        // [Boom Special 250] Y Scroll equivalent to Boom linedef length / 10. 
+      scroll_ceil_y = <float>;        // [Boom Special 250] Y Scroll equivalent to Boom linedef length / 10. 
                                       //                    NOTE: ZDoom/DSDA UDMF uses different field 'yscrollceiling'
       scroll_ceil_type = <string>;    // [Boom Special 250] Ceil scroll mode: "none" (no scroll), "visual" (only scroll texture)
                                       //                    NOTE: ZDoom/DSDA UDMF uses a different field 'scrollceilingmode'
